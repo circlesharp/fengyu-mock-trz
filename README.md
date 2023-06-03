@@ -1,35 +1,67 @@
-**💛 You can help the author become a full-time open-source maintainer by [sponsoring him on GitHub](https://github.com/sponsors/egoist).**
+# 丰羽笔记
 
----
+## 1 需求的发散与收敛
 
-# my-ts-lib
+### 发散阶段
 
-[![npm version](https://badgen.net/npm/v/my-ts-lib)](https://npm.im/my-ts-lib) [![npm downloads](https://badgen.net/npm/dm/my-ts-lib)](https://npm.im/my-ts-lib)
+3个关键点：层层分解，上层概况下次，同层独立穷尽  
+5个维度：功能，性能，场景，API，设计约束  
 
-## Using this template
+### 收敛阶段
 
-- Search `my-ts-lib` and replace it with your custom package name.
-- Search `egoist` and replace it with your name.
+3个关键：重要性，复杂度，影响面
 
-Features:
+步骤
 
-- Package manager [pnpm](https://pnpm.js.org/), safe and fast
-- Release with [semantic-release](https://npm.im/semantic-release)
-- Bundle with [tsup](https://github.com/egoist/tsup)
-- Test with [vitest](https://vitest.dev)
+1. 筛选整合
+2. 优先级排序
+3. 划定边界
+4. 确定可行性
 
-To skip CI (GitHub action), add `skip-ci` to commit message. To skip release, add `skip-release` to commit message.
+## 2 模块拆分与封装
 
-## Install
+强调对外交付的接口易用，屏蔽模块内部的巨大复杂度
 
-```bash
-npm i my-ts-lib
-```
+### 外部
 
-## Sponsors
+1. 职责单一
+2. 接口满足solid
 
-[![sponsors](https://sponsors-images.egoist.dev/sponsors.svg)](https://github.com/sponsors/egoist)
+### 内部
 
-## License
+1. 分层分治
+2. 层与层节藕
 
-MIT &copy; [EGOIST](https://github.com/sponsors/egoist)
+### 抽象
+
+1. 提炼不变的逻辑
+
+### 封装
+
+1. 整体
+2. 增强安全性与简化编程
+3. 核心是数据隐藏（但不是目的）
+4. 提供公共方法、公共配置对其访问
+
+## 3 API 设计
+
+> solid
+
+1. s/职责单一原则/只做一件事
+2. o/开闭原则/不修改现有代码的基础上拓展功能
+3. d/依赖倒置原则/模块不直接依赖另一个模块的细节，而是共同依赖定义明确的接口
+
+> 拓展机制
+>> 如 中间件、插件、mock uuid
+
+1. 开发增加
+2. 共建生态
+
+> 收敛 API 集
+> 暴露的接口要克制
+> 版本控制
+
+## 4 0630 作业
+
+1. 输出思维导图
+2. 输出 API设计 和 DEMO示例
