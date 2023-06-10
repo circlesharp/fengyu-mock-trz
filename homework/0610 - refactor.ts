@@ -49,52 +49,87 @@ function upload (files: string[]): Promise<boolean> {
 }
 
 // ============================================
-// 制程
+// 服务器策略层
 // ============================================
-type FileExt = 'txt' | 'exe' | 'doc' | 'other';
-interface FileInfo  {
-    name: string
-    ext: FileExt
+export type ServerType = 'ftp' | 'sftp' | 'http'
+export type UploadRst = { success: boolean, msg?: string }
+export type uploadFn = (fileName: string, cb?: (ret: boolean) => void) => Promise<UploadRst> 
+export async function uploadFtp(fileName: string): Promise<UploadRst> {
+    const success = await uploadByFtp(fileName)
+    const msg = success ? undefined : 'uploadByFtp fail'
+    return { success, msg }
 }
-interface FileUploadRst {
-    success: boolean
-    msg?: string
+export async function uploadSftp(fileName: string, cb: (ret: boolean) => void = (ret) => {}): Promise<UploadRst> {
+    try {
+        uploadBySftp([fileName], cb)
+        return { success: true }
+    } catch (error) {
+        return { success: false, msg: 'uploadBySftp fail' }
+    }
 }
-type FileMapItem = {
-    action: () => Promise<FileUploadRst>
-}
-// 要注意抽象出 upload 策略、规则
-const FileExtMap: Record<FileExt, FileMapItem> = {
-    txt: { action: async () => {} },
-    exe: { action: async () => {} },
-    doc: { action: async () => {} },
-    other: { action: async () => ({ success: false, msg: 'error: ext worrg' }) },
+export async function uploadHttp(fileName: string): Promise<UploadRst> {
+    try {
+        uploadByHttp(fileName)
+        return { success: true }
+    } catch (error) {
+        return { success: false, msg: 'uploadByHttp fail' }
+    }
 }
 
-
 // ============================================
-// 生产
+// 通用的 Upload 管理
 // ============================================
-async function uploadFiles(fileNames: string[]): Promise<boolean[]> {
-    return Promise.all(fileNames.map(i => new UploadFileManager(i)).map(i => i.upload()))
-}
-class UploadFileManager implements FileInfo {
-    static FileExtMap = FileExtMap
-
+export class UploadManager {
     public name: string =  '';
-    public ext!: FileExt;
-    constructor (fileName: string) {
+    public uploadFn?: (fileName: string) => Promise<UploadRst>;
+
+    constructor (fileName: string, uploadFn?: (fileName: string) => Promise<UploadRst>) {
         this.name = fileName;
-        this.ext = this.getExtName(fileName)
+        if (uploadFn) {
+            this.uploadFn = uploadFn
+        }
     }
     public async upload(): Promise<boolean> {
-        const { success, msg } = await UploadFileManager.FileExtMap[this.ext].action() 
+        if (!this.uploadFn) throw new Error()
+        
+        const { success, msg } = await this.uploadFn(this.name)
         !success && console.warn(msg)
 
         return success
     }
-    private getExtName(fileName: string): FileExt {
-        // todo
-        return 'doc';
+    public setUploadFn(uploadFn: (fileName: string) => Promise<UploadRst>): void {
+        this.uploadFn = uploadFn
     }
+}
+
+// ============================================
+// 业务再封装
+// ============================================
+
+type FileExt = 'txt' | 'exe' | 'doc' | 'other';
+const ExtServerMap: Record<FileExt, uploadFn> = {
+    txt: uploadFtp,
+    exe: uploadSftp,
+    doc: uploadHttp,
+    other: async () => ({ success: false, msg: 'not support' })
+}
+export class UploadByExtManager extends UploadManager {
+    static ExtServerMap = ExtServerMap
+
+    ext!: FileExt
+
+    constructor(fileName: string) {
+        super(fileName)
+        this.ext = this.getExtByFileName(fileName)
+        this.setUploadFn(UploadByExtManager.ExtServerMap[this.ext])
+    }
+
+    private getExtByFileName(fileName: string): FileExt {
+        // todo
+        return 'doc'
+    }
+}
+export function uploadByExt(files: string[]): Promise<boolean[]> {
+    const uploadManager = files.map(i => new UploadByExtManager(i))
+    return Promise.all(uploadManager.map(i => i.upload()))
 }
