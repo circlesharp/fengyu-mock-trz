@@ -1,4 +1,4 @@
-import { getRandomFromRange } from 'src/utils';
+import { getRandomIntFromRange } from 'src/utils';
 import { MockType } from 'src/types'
 
 export interface MockBooleanDesc {
@@ -9,7 +9,7 @@ export interface MockBooleanDesc {
 export class BooleanMock implements MockType<boolean> {
     public typeName = 'boolean';
     public generator(): boolean {
-        const val = getRandomFromRange([0, 1])
+        const val = getRandomIntFromRange([0, 1])
 
         return !!val
     }

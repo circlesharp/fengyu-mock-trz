@@ -1,4 +1,5 @@
 import { merge } from 'lodash-es'
+import { getRandomFloatFromRange, getRandomIntFromRange } from 'src/utils'
 import { MockType } from 'src/types'
 
 
@@ -8,8 +9,8 @@ export interface MockNumberDesc {
 }
 
 export interface NumberGeneratorParams {
-    range: Array<number>
-    precision: Array<number>
+    range?: Array<number>
+    precision?: Array<number>
 }
 
 export class NumberMocker implements MockType<number> {
@@ -20,9 +21,10 @@ export class NumberMocker implements MockType<number> {
 
     public typeName = 'number';
     public generator(params?: NumberGeneratorParams): number {
-        const { range, precision } = merge(NumberMocker.DefParams, params)
-        console.log(range, precision)
+        const { range, precision } = merge({}, NumberMocker.DefParams, params)
+        const prec = getRandomIntFromRange(precision!)
+        const rst = getRandomFloatFromRange(range!, prec)
 
-        return 2
+        return rst
     }
 }

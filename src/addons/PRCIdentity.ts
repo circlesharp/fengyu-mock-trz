@@ -26,7 +26,7 @@ export class PRCIdentityMocker implements MockType<string> {
     }
 
     public generator(params?: PRCIdentityGeneratorParams): string {
-        const { startsWith } = merge(PRCIdentityMocker.DefParams, params)
+        const { startsWith } = merge({}, PRCIdentityMocker.DefParams, params)
         if (typeof startsWith !== 'string')
             throw Error()
 

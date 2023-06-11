@@ -2,7 +2,7 @@ import { StringMocker, NumberMocker, BooleanMock, TimestampMocker, DateMocker } 
 import { PhoneMocker, PRCIdentityMocker } from 'src/addons'
 import { ArrayMocker, OneMocker, ObjectMocker } from 'src/structure-mocker'
 import { checkMockTypeExist } from "src/utils"
-import { MockType } from 'src/types'
+import { MockItemDesc, MockType } from 'src/types'
 
 export class Mock {
     private static BasicMockTypes = [
@@ -31,7 +31,8 @@ export class Mock {
     }
 
     // mock
-    public mock(type: string, params: any) {
+    public mock(desc: MockItemDesc) {
+        const { type, params } = desc
         const mocker = this.mockTypes[type]
         if (!mocker) throw Error()
 

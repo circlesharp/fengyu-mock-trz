@@ -1,6 +1,6 @@
 import { merge } from 'lodash-es'
 import dayjs from 'dayjs';
-import { getRandomFromRange } from 'src/utils';
+import { getRandomIntFromRange } from 'src/utils';
 import { MockType } from 'src/types'
 
 export interface MockTimestampDesc {
@@ -21,8 +21,8 @@ export class TimestampMocker implements MockType<number> {
 
     public typeName = 'timestamp';
     public generator(params?: TimestampGeneratorParams): number {
-        const { range, ms } = merge(TimestampMocker.DefParams, params)
-        const _timestamp = getRandomFromRange(range!)
+        const { range, ms } = merge({}, TimestampMocker.DefParams, params)
+        const _timestamp = getRandomIntFromRange(range!)
         const timestamp = ms ? _timestamp : dayjs(_timestamp).unix()
 
         return timestamp

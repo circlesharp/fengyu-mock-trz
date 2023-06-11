@@ -1,5 +1,6 @@
-interface ratioOption {
+export interface ratioOption {
     ratio: number
+    [property: string]: any
 }
 
 export function getRandomFromRatio<T extends ratioOption>(options: Array<T>): T {

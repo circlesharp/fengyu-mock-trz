@@ -1,17 +1,17 @@
 import { MockOpts } from 'src/types';
 import { it, expect, describe } from 'vitest';
-import { getRandomFromRange, mockString, mockNumber, mockBoolean, mockDate, mockIdentity, mockPhone } from '../src/utils';
+import { getRandomIntFromRange, mockString, mockNumber, mockBoolean, mockDate, mockIdentity, mockPhone } from '../src/utils';
 
-describe('test: getRandomFromRange', () => {
+describe('test: getRandomIntFromRange', () => {
     const from = 5
     const to = 8
 
-    it('getRandomFromRange 应该满足范围', () => {
+    it('getRandomIntFromRange 应该满足范围', () => {
         const range = [from, to];
 
         const result = []
         for (let i = 0; i < 20; i++) {
-            const rst = getRandomFromRange(range)
+            const rst = getRandomIntFromRange(range)
             result.push(rst)
         }
 
@@ -22,17 +22,17 @@ describe('test: getRandomFromRange', () => {
         expect(result.some(i => i > to)).toBe(false)
         expect(result.some(i => i < from)).toBe(false)
 
-        expect(getRandomFromRange([from, from])).toBe(from)
+        expect(getRandomIntFromRange([from, from])).toBe(from)
     });
 
-    it('getRandomFromRange 应该能补充缺省值', () => {
-        expect(getRandomFromRange([from, undefined])).toBe(from)
-        expect(getRandomFromRange([undefined, to])).toBe(to)
-        expect(() => getRandomFromRange([])).toThrow()
+    it('getRandomIntFromRange 应该能补充缺省值', () => {
+        expect(getRandomIntFromRange([from, undefined])).toBe(from)
+        expect(getRandomIntFromRange([undefined, to])).toBe(to)
+        expect(() => getRandomIntFromRange([])).toThrow()
     })
 
-    it('getRandomFromRange 应该能支持0', () => {
-        expect(getRandomFromRange([0])).toBe(0)
+    it('getRandomIntFromRange 应该能支持0', () => {
+        expect(getRandomIntFromRange([0])).toBe(0)
 
     })
 })

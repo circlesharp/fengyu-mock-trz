@@ -21,7 +21,7 @@ export class StringMocker implements MockType<string> {
 
     public typeName = 'string';
     public generator(params?: StringGeneratorParams): string {
-        const { len, chartSet } = merge(StringMocker.DefParams, params)
+        const { len, chartSet } = merge({}, StringMocker.DefParams, params)
         console.log(len, chartSet)
 
         return '2'

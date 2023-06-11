@@ -1,6 +1,6 @@
 import { merge } from 'lodash-es'
 import { getRandomFromRatio } from 'src/utils';
-import { getRandomFromRange } from 'src/utils';
+import { getRandomIntFromRange } from 'src/utils';
 import { StructureItem } from 'src/types'
 import { checkMockTypeExist } from "src/utils"
 import { MockType } from 'src/types'
@@ -28,10 +28,10 @@ export class ArrayMocker implements MockType<Array<any>> {
     }
 
     public generator(params?: ArrayGeneratorParams): Array<any> {
-        const { len, items } = merge(ArrayMocker.DefParams, params)
+        const { len, items } = merge({}, ArrayMocker.DefParams, params)
         const stdItems = items.map(this.generateStandardItem)
         const rst = []
-        const rstLen = getRandomFromRange(len!)
+        const rstLen = getRandomIntFromRange(len!)
         for (let i = 0; i < rstLen; i++) {
             const randomItem = getRandomFromRatio(stdItems)
             rst.push(this.generateRstByItem(randomItem))

@@ -4,7 +4,7 @@ import { MockType } from 'src/types'
 
 export interface MockPhoneDesc {
     type: 'phone'
-    desc: PhoneGeneratorParams
+    params: PhoneGeneratorParams
 }
 
 export interface PhoneGeneratorParams {
@@ -19,7 +19,7 @@ export class PhoneMocker implements MockType<string> {
 
     public typeName = 'phone';
     public generator(params?: PhoneGeneratorParams): string {
-        const { len } = merge(PhoneMocker.DefParams, params)
+        const { len } = merge({}, PhoneMocker.DefParams, params)
         const stringMocker = new StringMocker()
         const phone = stringMocker.generator({ len, customCharSet: PhoneMocker.PhoneChartSet })
 
