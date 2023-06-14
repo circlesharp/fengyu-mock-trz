@@ -1,6 +1,7 @@
 import { merge } from 'lodash-es'
 import { StringMocker } from "src/basic-mocker"
 import { MockType } from 'src/types'
+import { getRandomIntFromRange } from 'src/utils'
 
 export interface MockPhoneDesc {
     type: 'phone'
@@ -8,20 +9,23 @@ export interface MockPhoneDesc {
 }
 
 export interface PhoneGeneratorParams {
-    len: Array<number>
+    len?: Array<number>
+    prefix?: string
 }
 
 export class PhoneMocker implements MockType<string> {
-    private static PhoneChartSet = ('123456789').split('')
     private static DefParams: PhoneGeneratorParams = {
-        len: [11, 11]
+        len: [11, 11],
+        prefix: '136'
     }
 
     public typeName = 'phone';
     public generator(params?: PhoneGeneratorParams): string {
-        const { len } = merge({}, PhoneMocker.DefParams, params)
+        const { len, prefix } = merge({}, PhoneMocker.DefParams, params)
+        const phoneLen = getRandomIntFromRange(len!)
+        const restLen = phoneLen - prefix!.length
         const stringMocker = new StringMocker()
-        const phone = stringMocker.generator({ len, customCharSet: PhoneMocker.PhoneChartSet })
+        const phone = prefix + stringMocker.generator({ len: [restLen, restLen], chartSet: ['num'] })
 
         return phone
     }

@@ -27,7 +27,7 @@ export class ArrayMocker implements MockType<Array<any>> {
         this.mockTypes = mockTypes
     }
 
-    public generator(params?: ArrayGeneratorParams): Array<any> {
+    public generator(params: ArrayGeneratorParams): Array<any> {
         const { len, items } = merge({}, ArrayMocker.DefParams, params)
         const stdItems = items.map(this.generateStandardItem)
         const rst = []

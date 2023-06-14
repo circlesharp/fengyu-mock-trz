@@ -5,7 +5,7 @@ import { MockType } from 'src/types'
 
 export interface MockNumberDesc {
     type: 'number'
-    params: NumberGeneratorParams
+    params?: NumberGeneratorParams
 }
 
 export interface NumberGeneratorParams {

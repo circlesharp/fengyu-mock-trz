@@ -3,7 +3,7 @@ import { MockType } from 'src/types'
 
 export interface MockBooleanDesc {
     type: 'boolean'
-    params: void
+    params?: void
 }
 
 export class BooleanMock implements MockType<boolean> {

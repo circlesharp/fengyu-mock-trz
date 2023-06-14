@@ -10,16 +10,15 @@ describe('test: getRandomFromRatio', () => {
     const result = []
     const REPEAT = 20
     for (let i = 0; i < REPEAT; i++) {
-        const rst = getRandomFromRatio(options)
-        result.push(rst.value)
+      const rst = getRandomFromRatio(options)
+      result.push(rst.value)
     }
 
     // 期望每次都有结果
-    expect(result.filter(i => !!i).length).toBe(REPEAT)
-    
-    // 测试边界情况, 有一定概率会失败
-    // expect(result.some(i => i === 1)).toBe(true)
-    // expect(result.some(i => i === 2)).toBe(true)
-    // expect(result.every(i => i >= 1 && i <= 2)).toBe(true)
+    expect(result.filter(i => i != null).length).toBe(REPEAT)
+
+    // 期望每种情况都有一定概率出现，有一定概率会失败
+    expect(result.reduce((t, c) => t + Number(c === 1), 0)).toBeGreaterThan(0)
+    expect(result.reduce((t, c) => t + Number(c === 2), 0)).toBeGreaterThan(0)
   });
 })
