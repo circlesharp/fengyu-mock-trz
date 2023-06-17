@@ -18,7 +18,9 @@ export class Mock {
     public mock(desc: MockItemDesc) {
         const { type, params } = desc
         const mocker = this.mockTypes[type]
-        if (!mocker) throw Error()
+        if (!mocker)
+            throw Error('逻辑错误：不存在该 mocker')
+
 
         return mocker.generator(params)
     }
@@ -27,7 +29,7 @@ export class Mock {
     private mockTypes: Partial<Record<MockItemDesc['type'], MockType<any>>> = {}
     public addMockType(mockType: MockType<any>) {
         if (checkMockTypeExist(this.mockTypes, mockType.typeName)) {
-            throw Error()
+            throw Error('逻辑错误: 该 mocker 已存在，请勿重复添加')
         }
 
         const typeName = mockType.typeName as MockItemDesc['type']

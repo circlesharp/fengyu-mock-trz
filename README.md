@@ -1,254 +1,219 @@
-# 丰羽笔记
+# FENGYU-MOCK
 
-## 1 需求的发散与收敛
+## 简介
 
-### 发散阶段
+一个 mock 工具库，能够提供：数值、字符串、布尔值、时间戳、日期、数值、对象、电话、身份证等数据。
 
-3 个关键点：层层分解，上层概况下次，同层独立穷尽  
-5 个维度：功能，性能，场景，API，设计约束
+类型可区分为：基本类型、结构类型、addons 类型。基本类型即 js 中的可序列化的非对象类型；结构类型包括：对象、数组、one(随机挑一个)；addons 类型为拓展类型，支持用户拓展。
 
-### 收敛阶段
+## 使用方法
 
-3 个关键：重要性，复杂度，影响面
+### Mock类初始化
 
-步骤
+支持设置约束条件
 
-1. 筛选整合
-2. 优先级排序
-3. 划定边界
-4. 确定可行性
+```ts
+const mock = new Mock({
+  maxObjDepth: 3,
+  maxStrLength: 10,
+}); // 初始化，可以自定义性能约束
+```
 
-## 2 模块拆分与封装
+支持设置空规则
 
-强调对外交付的接口易用，屏蔽模块内部的巨大复杂度
+```ts
+const mock = new Mock({
+  empty: {
+    allow: true,
+    string: ['-'],
+    number: [0, NaN, undefined],
+    array: [[], null, undefined],
+    object: [{}, null, undefined],
+  },
+}); // 初始化，可以自定义空值
+```
 
-### 外部
+### mock 数值
 
-1. 职责单一
-2. 接口满足 solid
+> 支持设置数值精度，支持设置数值范围
 
-### 内部
+```ts
+mock.number({ precision: [2, 2] }); // 233.33
+mock.number({ precision: [2, 4] }); // 1.22, 1.222, 1.2222
+```
 
-1. 分层分治
-2. 层与层节藕
+```ts
+mock.number({ range: [2, 2] }); // 2
+mock.number({ range: [2, 4] }); // 2, 3, 4
+```
 
-### 抽象
+### mock 字符串
 
-1. 提炼不变的逻辑
+> 支持设置字符串长度，支持指定字符集，支持设置自定义字符
 
-### 封装
+```ts
+mock.string({ len: [2, 4] }); // 'aa', 'aaa', 'aaaa'
+mock.string({ chartset: ['zh', 'en'] }); // '你好world'
+mock.string({ customString: ['hello', 'world'] }) // 'hellowo'
+```
 
-1. 整体
-2. 增强安全性与简化编程
-3. 核心是数据隐藏（但不是目的）
-4. 提供公共方法、公共配置对其访问
+### mock 布尔值
 
-## 3 API 设计
+> 随机生成布尔值
 
-> solid
+```ts
+mock.boolean(); // true, false
+```
 
-1. s/职责单一原则/只做一件事
-2. o/开闭原则/不修改现有代码的基础上拓展功能
-3. d/依赖倒置原则/模块不直接依赖另一个模块的细节，而是共同依赖定义明确的接口
+### mock 时间戳
 
-> 拓展机制
->
-> > 如 中间件、插件、mock uuid
+> 随机生成时间戳，支持指定毫秒、秒，支持设置范围
 
-1. 开发增加
-2. 共建生态
+```ts
+mock.timestamp(); // 1685785399
+mock.timestamp({ ms: true }); // 1685785399096
+mock.timestamp({ range: ['1999', '2023'] }) // 1685785399096
+```
 
-> 收敛 API 集
-> 暴露的接口要克制
-> 版本控制
+### mock 时间日期
 
-## 4 0603 作业
+> 随机日期、时间字符串，支持自定义格式，支持设置范围
 
-1. 输出思维导图
-2. 输出 API 设计 和 DEMO 示例
+```ts
+mock.date({ format: 'MM-DD' }); // 03-14
+mock.data({ format: 'HH:mm' }); // 23:33
+mock.data({ { range: ['1999', '2023'] } }); // 2023/06/15
+```
 
-## 5 逻辑解耦
+### mock 数组
 
-将纠缠的逻辑分开，提高可测试性、拓展性
+> 随机生成数组，支持设置长度防伪，支持指定元素类型，支持指定出现概率
 
-### 步骤
-
-1. 识别变与不变（易变流程、不变流程）
-    1. 易变：依赖实现方案的、依赖需求的、需要不断优化与改变的
-    2. 不变：与具体业务无关的
-2. 分离
-    1. 将其分别实现为独立模块、函数
-3. 制程与生产
-    1. 制程阶段：确定生产阶段的各种参数（配置中间层）
-    2. 生产阶段：根据上述参数加工
-    3. 将易变步骤由变量定义，做到可运行时改变
-
-## 6 代码健壮
-
-### 6.1 异常处理
-
-#### 契约式编程
-
-前置的类型检查与后置的输出处理
-
-#### 进攻式编程
-
-在代码中预测并处理错误，保证正常执行，并适当提示错误
-
-#### 防御式编程
-
-进行边界检查、错误处理、异常处理；加入错误处理机制，保护代码免受非预期输入或外部条件的影响
-
-### 6.2 日志处理
-
-#### 目标
-
-再现程序执行结果
-
-#### 日志五元组
-
-时间、模块、对象、事件、结果
-
-#### 级别
-
-1. trace 实时调试日志
-2. debug 调试日志
-3. info 信息
-4. warn 告警 （五元组 + 建议）
-5. error 错误 （五元组 + 建议）
-
-## 7 封装
-
-> 从使用者的角度去衡量 易于维护
-
-### 7.1 避免强行封装
-
-定义良好的输入和输出；考虑变化的来源，找到变化，定什么是可以封装的
-
-### 7.2 避免破坏封装
-
-经受不住诱惑，往封装好的里面加入奇怪逻辑，变得不通用  
-可以考虑增加一层中间层（二次封装）  
-可以考虑再写一个方法
-
-## 8 0610 作业
-
-1. 完成作业，完善拆分与封装技巧，提高模块可拓展性、可复用性
-2. 完成异常处理、日志，提高健壮性
-3. 补充单测
-4. 重构一坨狗屎
-
-``` js
-// 请使用优化以下代码：
-
-// 假设已经存在以下3个函数，3个函数的功能都是向服务器上传文件，根据不同的上传类型参数都会不一样。内容的实现这里无须关注
-// 请重新设计一个功能，根据不同文件的后缀名，上传到不同的服务器。
-// txt 上传到 ftp
-// exe 上传到 sftp
-// doc 上传到 http
-function uploadByFtp (file: string): Promise<boolean> {
-    return new Promise(resolve => resolve(true))
+```ts
+const strDesc: MockItemDesc = {
+  type: 'string',
+  params: { len: [1, 2] }
 }
-function uploadBySftp (file: string[], cb: (ret: boolean) => void): void {
-    cb(true)
-}
-function uploadByHttp (file: string): boolean {
-    return true
+const strDesc: MockItemDesc = {
+  type: 'number',
+  params: { precision: 2 }
 }
 
-// 实现如下
-function upload (files: string[]): Promise<boolean> {
-    return Promise.all(files.filter(file => {
-        const ext = file.match(/\.(\w+)$/)[1]
-        if (ext !== 'txt' && ext !== 'ext' && ext !== 'doc') {
-            return false
-        }
-        return true
-    }).map(file => {
-        const ext = file.match(/\.(\w+)$/)[1]
-        if (ext === 'txt') {
-            return uploadByFtp(file)
-        } else if (ext === 'exe') {
-            return new Promise((resolve, reject) => {
-                uploadBySftp([file], ret => {
-                    if (ret) {
-                        resolve(true)
-                    } else {
-                        reject()
-                    }
-                })
-            })
-        } else if (ext === 'doc') {
-            return Promise.resolve(uploadByHttp(file))
-        }
-    })).then(() => {
-        console.log('upload success.')
-        return true
-    })
+mock.array({
+  len: [2, 2],
+  items: [
+    {
+      desc: strDesc,
+      percent: 40,
+    },
+    item2: {
+      desc: numDesc,
+      percent: 60,
+    }
+  ],
+}) // ['a', 2.33]
+
+mock.array({
+  len: [2, 2],
+  items: [strDesc, numDesc]
+}) // 'a', 2.33
+```
+
+### mock 随机
+
+> 随机生成一个结果, 支持传入各种类型或特定值, 支持设置概率
+
+```ts
+mock.one({
+  items: [{ value: true }, { value: 2333 }]
+}); // true 或 2333
+
+mock.one({
+  items: [
+    {desc: { type: 'boolean' }, ratio: 80},
+    { value: 2333, ratio: 20 },
+  ],
+}); // true 或 2333
+```
+
+### mock 对象
+
+> 生成一个对象, 支持指定对象结构
+
+```ts
+const objDesc: MockItemDesc = {
+  type: 'object',
+  params: {},
+  properties: {
+    a: strDesc,
+    b: strDesc,
+  },
+};
+mock.object(objDesc); // { a: 'a', b: 2.33 }
+```
+
+### general mock
+
+```ts
+mock.mock(strDesc); // 'a'
+mock.mock(); // { a: 'a', b: 2.33 }
+```
+
+## 拓展性
+
+> addons 类型为拓展类型，支持用户拓展。
+
+自定义 addons 类型
+
+``` ts
+import { merge } from 'lodash-es'
+import { StringMocker } from "src/basic-mocker"
+import { MockType } from 'src/types'
+
+export interface MockPRCIdentityDesc {
+    type: 'PRCIdentity'
+    params?: PRCIdentityGeneratorParams
+}
+
+export interface PRCIdentityGeneratorParams {
+    prefix?: string
+}
+
+export class PRCIdentityMocker implements MockType<string> {
+    private static IdLength = 18
+    private static DefParams: PRCIdentityGeneratorParams = {
+        prefix: '440682'
+    }
+
+    public typeName = 'PRCIdentity';
+    private stringMocker!: StringMocker
+
+    constructor() {
+        this.stringMocker = new StringMocker()
+    }
+
+    public generator(params?: PRCIdentityGeneratorParams): string {
+        const { prefix } = merge({}, PRCIdentityMocker.DefParams, params)
+        if (typeof prefix !== 'string')
+            throw Error('类型错误: 请传入字符串')
+
+        const restLen = PRCIdentityMocker.IdLength - prefix.length ?? 0
+        const restStr = this.stringMocker.generator({
+            len: [restLen, restLen],
+            chartSet: ['num']
+        })
+
+        const identity = `${prefix}${restStr}`
+
+        return identity
+    }
 }
 ```
 
-## 9 重构
+注册 addons 类型
 
-> 代码不断堆砌，代码向着越来越混乱的方向演进
-
-### 重构的原因
-
-1. 缺设计
-2. 成本，堆砌式编程
-3. 缺乏代码质量监督机制
-
-解决思路：**持续不断的重构**
-
-### 重构的理由
-
-1. 重构可以减少技术债务，减少理解成本，减少寻找重复代码
-2. 改进软件设计，重构就是在整理代码
-3. 让软件更容易理解
-4. 帮助找到 bug
-
-### 什么是重构
-
-#### 定义
-
-1. 对内部结构的调整
-2. 不改变软件可观察行为
-3. 提高可理解性，降低维护成本
-
-#### 程度
-
-1. 大型重构
-2. 小型重构（常用）
-
-#### 何时
-
-1. 原则：添加新功能的时候不应该同时重构老代码，反之亦然
-2. 前提：具备完善的单元测试
-3. 时机：三次法则；意图不清晰；存在“坏味道”（依恋情结、数据泥团、夸夸其谈未来性）；需要更好支撑业务
-4. 何时不：还不能正常运行；临近交付
-
-### 技巧
-
-#### 中间层
-
-1. 引入中间层引用老代码
-2. 新功能中间层引用新代码
-3. 老代码逐步改用新代码
-4. 删除老代码
-
-#### 意图导向编程
-
-把某件事的流程与具体做事的实现分开
-
-1. 分解问题
-2. 假定各步骤已经实现，组织函数就能实现
-3. 实现这些函数
-
-#### tips
-
-1. 只重构经常修改的部分
-2. 抑制住多改一点的冲动
-3. 重构是需要练习的，比写代码难
-4. 删除僵尸代码可能是提供维护性的最有效的方法
-5. **单元测试是重构的基础**
-6. 不要奢望别人能写出高质量代码，不要误以为自己写的是高质量的代码
+``` ts
+const mock = new Mock()
+const idMocker = new PRCIdentityMocker()
+mock.addMockType(idMocker)
+```

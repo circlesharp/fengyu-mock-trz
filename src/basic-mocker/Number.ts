@@ -1,6 +1,6 @@
 import { merge } from 'lodash-es'
 import { getRandomFloatFromRange, getRandomIntFromRange } from 'src/utils'
-import { MockConstraint, MockType } from 'src/types'
+import { MockType } from 'src/types'
 
 
 export interface MockNumberDesc {

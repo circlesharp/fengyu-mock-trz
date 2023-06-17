@@ -27,7 +27,7 @@ export class PRCIdentityMocker implements MockType<string> {
     public generator(params?: PRCIdentityGeneratorParams): string {
         const { prefix } = merge({}, PRCIdentityMocker.DefParams, params)
         if (typeof prefix !== 'string')
-            throw Error()
+            throw Error('类型错误: 请传入字符串')
 
         const restLen = PRCIdentityMocker.IdLength - prefix.length ?? 0
         const restStr = this.stringMocker.generator({

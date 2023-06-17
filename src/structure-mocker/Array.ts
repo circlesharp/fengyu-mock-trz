@@ -51,7 +51,7 @@ export class ArrayMocker implements MockType<Array<any>> {
         if (desc) {
             const { type, params } = desc
             if (!checkMockTypeExist(this.mockTypes, type)) {
-                throw Error()
+                throw Error('逻辑错误：不存在该 mocker')
             }
             const rst = this.mockTypes[type].generator(params)
             return rst

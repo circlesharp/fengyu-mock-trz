@@ -11,7 +11,8 @@ const UTF8_CHARSET_RANGE: Record<Charset, [number, number]> = {
 
 export function getRandomCharFromCharset(charset: Array<Charset>): string {
     charset.forEach(i => {
-        if (!(i in UTF8_CHARSET_RANGE)) throw Error()
+        if (!(i in UTF8_CHARSET_RANGE))
+            throw Error('逻辑错误：不存在该字符集')
     })
 
     const { value: randomCharset } = getRandomFromRatio(charset.map(i => ({ value: i, ratio: 1 })))
