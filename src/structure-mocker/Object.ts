@@ -18,7 +18,7 @@ export class ObjectMocker implements MockType<object> {
         this.mockTypes = mockTypes
     }
 
-    public generator(params: ObjectGeneratorParams): object {
+    public generator(params: ObjectGeneratorParams): any {
         const { properties } = params
         this.generateStandardProperties(properties)
         const rst: any = {}
@@ -30,7 +30,8 @@ export class ObjectMocker implements MockType<object> {
 
             rst[key] = this.generateRstByItem(property as StructureItem)
         }
-
+        // console.log(233, rst)
+        debugger
         return rst
     }
 
