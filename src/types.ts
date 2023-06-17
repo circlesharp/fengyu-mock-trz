@@ -36,5 +36,19 @@ export interface StructureItem {
 
 export interface MockType<T> {
     typeName: string;
-    generator(params: any): T;
+    generator: (params: any) => T;
+    setEmptyRule?: (emptyRule: { allow: boolean, rule: Array<any> }) => void;
+    setConstraint?: (constraint: MockConstraint) => void
+}
+
+export type MockConstraint = {
+    maxObjDepth: number,
+    maxArrLenght: number,
+    maxStrLength: number,
+    maxNumValue: number,
+}
+
+type MockerTypeEmptyRule = Partial<Record<MockItemDesc['type'], Array<any>>>
+export interface MockEmptyRules extends MockerTypeEmptyRule {
+    allow: boolean
 }

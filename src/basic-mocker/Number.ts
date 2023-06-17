@@ -1,6 +1,6 @@
 import { merge } from 'lodash-es'
 import { getRandomFloatFromRange, getRandomIntFromRange } from 'src/utils'
-import { MockType } from 'src/types'
+import { MockConstraint, MockType } from 'src/types'
 
 
 export interface MockNumberDesc {
@@ -20,11 +20,20 @@ export class NumberMocker implements MockType<number> {
     }
 
     public typeName = 'number';
+
     public generator(params?: NumberGeneratorParams): number {
         const { range, precision } = merge({}, NumberMocker.DefParams, params)
         const prec = getRandomIntFromRange(precision!)
         const rst = getRandomFloatFromRange(range!, prec)
 
         return rst
+    }
+
+    public setEmptyRule() {
+        // todo
+    }
+
+    public setConstraint() {
+        // todo
     }
 }

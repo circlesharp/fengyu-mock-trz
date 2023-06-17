@@ -4,7 +4,7 @@ import { MockType } from 'src/types'
 
 export interface MockPRCIdentityDesc {
     type: 'PRCIdentity'
-    params: PRCIdentityGeneratorParams
+    params?: PRCIdentityGeneratorParams
 }
 
 export interface PRCIdentityGeneratorParams {

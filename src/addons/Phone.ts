@@ -5,7 +5,7 @@ import { getRandomIntFromRange } from 'src/utils'
 
 export interface MockPhoneDesc {
     type: 'phone'
-    params: PhoneGeneratorParams
+    params?: PhoneGeneratorParams
 }
 
 export interface PhoneGeneratorParams {

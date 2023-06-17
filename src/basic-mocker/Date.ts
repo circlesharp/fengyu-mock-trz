@@ -4,8 +4,8 @@ import { getRandomIntFromRange } from 'src/utils';
 import { MockType } from 'src/types'
 
 export interface MockDateDesc {
-    type: 'Date'
-    params: DateGeneratorParams
+    type: 'date'
+    params?: DateGeneratorParams
 }
 
 export interface DateGeneratorParams {

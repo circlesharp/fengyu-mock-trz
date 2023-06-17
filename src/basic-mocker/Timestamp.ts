@@ -5,7 +5,7 @@ import { MockType } from 'src/types'
 
 export interface MockTimestampDesc {
     type: 'timestamp',
-    params: TimestampGeneratorParams
+    params?: TimestampGeneratorParams
 }
 
 export interface TimestampGeneratorParams {
